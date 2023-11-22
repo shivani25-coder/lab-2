@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f0f0f0;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      header {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px;
+        border-radius: 8px 8px 0 0;
+      }
+
+      form {
+        margin-top: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+      }
+
+      button {
+        background-color: #2ecc71;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #27ae60;
+      }
+
+      #weatherResult {
+        margin-top: 20px;
+      }
+
+      .alert {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 4px;
+      }
+
+      .alert-danger {
+        background-color: #e74c3c;
+        color: #fff;
+      }
+
+      .alert-success {
+        background-color: #2ecc71;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Weather App</h1>
+      </header>
+
+      <form id="weatherForm">
+        <label for="cityInput">Enter City:</label>
+        <input type="text" id="cityInput" placeholder="E.g., London" />
+        <button type="submit">Get Weather</button>
+      </form>
+
+      <div id="weatherResult"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document
+        .getElementById("weatherForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const city = document.getElementById("cityInput").value;
+
+          try {
+            const response = await fetch(`/weather?city=${city}`);
+            const data = await response.json();
+
+            const weatherResult = document.getElementById("weatherResult");
+            if (data.error) {
+              weatherResult.innerHTML = `<div class="alert alert-danger">${data.error.message}</div>`;
+            } else {
+              weatherResult.innerHTML = `
+            <div class="alert alert-success">
+              <h4>${data.name}, ${data.sys.country}</h4>
+              <p>Temperature: ${data.main.temp}°C</p>
+              <p>Weather: ${data.weather[0].description}</p>
+            </div>
+          `;
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        });
+    </script>
+  </body>
+</html>
